@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "npx hardhat test",
-    "lint": "./node_modules/.bin/solhint -f table contracts/**/*.sol"
+    "lint": "./node_modules/.bin/solhint -f table contracts/**/*.sol",
+    "prettier:check": "npx prettier -c 'contracts/**/*.sol'",
+    "prettier:write": "prettier --write 'contracts/**/*.sol'"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,9 @@
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.5",
     "hardhat": "^2.6.1",
-    "solhint": "^3.3.6"
+    "prettier": "^2.3.2",
+    "prettier-plugin-solidity": "^1.0.0-beta.17",
+    "solhint": "^3.3.6",
+    "solhint-plugin-prettier": "^0.0.5"
   }
 }
