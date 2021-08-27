@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.7.0;
+pragma solidity 0.7.3;
 
 contract Token {
   string public name = "Mattes Awesome Token";
@@ -9,7 +9,7 @@ contract Token {
 
   address public owner;
 
-  mapping(address => uint256) balances;
+  mapping(address => uint256) private balances;
 
   constructor() {
     balances[msg.sender] = totalSupply;
