@@ -4,7 +4,8 @@
   "description": "Learning about smart contract programming",
   "main": "index.js",
   "scripts": {
-    "test": "npx hardhat test"
+    "test": "npx hardhat test",
+    "lint": "./node_modules/.bin/solhint -f table contracts/**/*.sol"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.5",
-    "hardhat": "^2.6.1"
+    "hardhat": "^2.6.1",
+    "solhint": "^3.3.6"
   }
 }
