@@ -17,3 +17,6 @@ tmp/
 
 # Optional eslint cache
 .eslintcache
+
+# Accounts
+accounts.json
