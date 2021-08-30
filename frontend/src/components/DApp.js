@@ -1,25 +1,38 @@
-import './DApp.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import Home from './Home';
+import BasicToken from './BasicToken';
 import Button from 'react-bootstrap/Button';
 
 function DApp() {
   return (
-    <div className="DApp">
-      <header className="DApp-header">
-        <p>
-          Edit <code>src/DApp.js</code> and save to reload.
-        </p>
-        <Button
-          type="Button"
-          class="btn btn-primary"
-          className="DApp-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </Button>
-      </header>
-    </div>
+    <Router>
+      <Button type="Button" class="btn btn-primary">
+        Connect Wallet
+      </Button>
+      <div className="DApp">
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/BasicToken">Basic Token</Link>
+          </li>
+        </ul>
+      </div>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route exact path="/BasicToken">
+          <BasicToken />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 
