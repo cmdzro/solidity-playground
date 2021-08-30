@@ -1,4 +1,5 @@
 import './DApp.css';
+import Button from 'react-bootstrap/Button';
 
 function DApp() {
   return (
@@ -7,14 +8,16 @@ function DApp() {
         <p>
           Edit <code>src/DApp.js</code> and save to reload.
         </p>
-        <a
+        <Button
+          type="Button"
+          class="btn btn-primary"
           className="DApp-link"
           href="https://reactjs.org"
           target="_blank"
           rel="noopener noreferrer"
         >
           Learn React
-        </a>
+        </Button>
       </header>
     </div>
   );
