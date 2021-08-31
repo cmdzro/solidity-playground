@@ -1,45 +1,45 @@
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import Home from './Home';
 import BasicToken from './BasicToken';
+import { Navigation } from './Navigation';
 
-function DApp() {
-  return (
-    <Router>
-      <div class="container-fluid">
-        <nav class="navbar navbar-light bg-light">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="/">Solidity Playground</a>
-            <form class="d-flex">
-              <button class="btn btn-outline-success me-1" type="button">Connect Wallet</button>
-            </form>
-          </div>
-        </nav>
-        <hr/>
-        <div class="row">
-          <div class="col-2">
-            <nav class="nav flex-column">
-              <Link class="nav-link" href="/BasicToken">Basic Token</Link>
-            </nav>
-          </div>
-          <div class="col">
-            <Switch>
-              <Route exact path="/">
-                <Home />
-              </Route>
-              <Route exact path="/BasicToken">
-                <BasicToken />
-              </Route>
-            </Switch>
+export class DApp extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.initialState = {
+      selectedAddress: undefined,
+      networkError: undefined,
+    };
+
+    this.state = this.initialState;
+  }
+
+  render() {
+    return (
+      <Router>
+        <div className="container-fluid">
+          <nav className="navbar navbar-light bg-light">
+            <div className="container-fluid">
+              <a className="navbar-brand" href="/">Solidity Playground</a>
+              <form className="d-flex">
+                <button className="btn btn-outline-success me-1" type="button">Connect Wallet</button>
+              </form>
+            </div>
+          </nav>
+          <hr/>
+          <div className="row">
+            <div className="col-2">
+              <Navigation></Navigation>
+            </div>
+            <div className="col">
+              <Route exact path="/" component={Home}></Route>
+              <Route path="/BasicToken" component={BasicToken}></Route>
+            </div>
           </div>
         </div>
-      </div>
-    </Router>
-  );
+      </Router>
+    );
+  }
 }
-
-export default DApp;
