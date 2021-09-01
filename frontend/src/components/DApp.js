@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Home from './Home';
-import BasicToken from './BasicToken';
-import { WalletConnection } from './WalletConnection';
 import { Navigation } from './Navigation';
+import { WalletConnection } from './WalletConnection';
+import Home from './Home';
+import { BasicToken } from './BasicToken';
 
 export class DApp extends React.Component {
   constructor(props) {
@@ -41,7 +41,7 @@ export class DApp extends React.Component {
             </div>
             <div className="col">
               <Route exact path="/" component={Home}></Route>
-              <Route path="/BasicToken" component={BasicToken}></Route>
+              <Route path="/BasicToken" render={() => <BasicToken data={this.state} />}></Route>
             </div>
           </div>
         </div>
