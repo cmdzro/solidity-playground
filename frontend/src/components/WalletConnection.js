@@ -7,6 +7,7 @@ export class WalletConnection extends React.Component {
     super(props);
 
     this.initialState = {
+      initialized: false,
       selectedAddress: undefined,
       network: undefined
     }
@@ -19,54 +20,28 @@ export class WalletConnection extends React.Component {
       return (
         <button className="btn btn-outline-warning me-1" type="button" disabled>Install MetaMask First</button>
       );
-    } else if (this.state.selectedAddress === undefined) {
+    } else if (this.state.initialized && this.state.selectedAddress === undefined) {
       return (
         <button className="btn btn-outline-primary me-1" type="button" onClick={() => this._connectWallet()}>Connect Wallet</button>
       );
-    } else {
+    } else if (this.state.initialized) {
       return (
-        <div className="btn-group" role="group" aria-label="connected group">
-          <button className="btn btn-outline-secondary" disabled>{this.state.network}</button>
-          <button className="btn btn-outline-success" type="button" onClick={() => this._disconnect()}>Disconnect Wallet</button>
-        </div>
+        <button className="btn btn-outline-secondary" disabled>Connected to {this.state.network}</button>
       );
+    } else {
+      return (<div></div>);
     }
   }
 
   async _connectWallet() {
     const { ethereum } = window;
-    const [selectedAddress] = await ethereum.enable();
+    const [selectedAddress] = await ethereum.request({ method: 'eth_requestAccounts' });
 
     if (!this._checkNetwork()) {
       return;
     }
 
-    this.setState({
-      network: "Localhost", // TODO make dynamic later
-      selectedAddress: selectedAddress
-    });
-
-    this.props.onConnect(this.state);
-
-    ethereum.on("accountsChanged", ([newAddress]) => {
-      this.props.onDisconnect();
-
-      this.setState({
-        network: "Localhost",
-        selectedAddress: selectedAddress
-      });
-
-      this.props.onConnect(this.state);
-    });
-
-    ethereum.on("chainChanged", ([networkId]) => {
-      this._disconnect()
-    });
-  }
-
-  _disconnect() {
-    this.setState(this.initialState);
-    this.props.onDisconnect();
+    this._connectTo(selectedAddress);
   }
 
   _isMetaMaskInstalled() {
@@ -84,27 +59,47 @@ export class WalletConnection extends React.Component {
     return false;
   }
 
-  async _retrieveAccounts() {
+  async _initializeAccounts() {
     const { ethereum } = window;
+
+    ethereum.on("accountsChanged", ([newAddress]) => {
+      this.props.onDisconnect();
+
+      this._connectTo(newAddress);
+    });
+
+    ethereum.on("chainChanged", ([networkId]) => {
+      this._disconnect()
+    });
+
     const accounts = await ethereum.request({ method: 'eth_accounts' });
 
     if (accounts.length === 0) {
-      return;
+      this._disconnect();
+    } else {
+      this._connectTo(accounts[0]);
     }
+  }
 
+  _connectTo(address) {
     this.setState({
+      initialized: true,
       network: "Localhost", // TODO make dynamic later
-      selectedAddress: accounts[0]
+      selectedAddress: address
     });
-
     this.props.onConnect(this.state);
   }
 
-  componentDidMount() {
-    this._retrieveAccounts();
+  _disconnect() {
+    this.setState({
+      initialized: true,
+      selectedAddress: undefined,
+      network: undefined
+    });
+    this.props.onDisconnect();
   }
 
-  componentWillUnmount() {
-    console.log("will unmount");
+  componentDidMount() {
+    this._initializeAccounts();
   }
 }
