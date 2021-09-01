@@ -84,6 +84,26 @@ export class WalletConnection extends React.Component {
     return false;
   }
 
+  async _retrieveAccounts() {
+    const { ethereum } = window;
+    const accounts = await ethereum.request({ method: 'eth_accounts' });
+
+    if (accounts.length === 0) {
+      return;
+    }
+
+    this.setState({
+      network: "Localhost", // TODO make dynamic later
+      selectedAddress: accounts[0]
+    });
+
+    this.props.onConnect(this.state);
+  }
+
+  componentDidMount() {
+    this._retrieveAccounts();
+  }
+
   componentWillUnmount() {
     console.log("will unmount");
   }
