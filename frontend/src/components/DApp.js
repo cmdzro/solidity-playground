@@ -2,10 +2,8 @@ import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Home from './Home';
 import BasicToken from './BasicToken';
-import { ConnectButton } from './ConnectButton';
+import { WalletConnection } from './WalletConnection';
 import { Navigation } from './Navigation';
-
-const HARDHAT_NETWORK_ID = '1337';
 
 export class DApp extends React.Component {
   constructor(props) {
@@ -28,7 +26,11 @@ export class DApp extends React.Component {
             <div className="container-fluid">
               <a className="navbar-brand" href="/">Solidity Playground</a>
               <form className="d-flex">
-                <ConnectButton onClick={() => this._connectWallet()}/>
+                <WalletConnection
+                  onConnect={(state) => this._onConnect(state)}
+                  onDisconnect={() => this._onDisconnect()}
+                  onError={(error) => this._onError(error)}
+                />
               </form>
             </div>
           </nav>
@@ -47,50 +49,19 @@ export class DApp extends React.Component {
     );
   }
 
-  async _connectWallet() {
-    const [selectedAddress] = await window.ethereum.enable();
-
-    if (!this._checkNetwork()) {
-      return;
-    }
-
-    this._initialize(selectedAddress);
-
-    window.ethereum.on("accountsChanged", ([newAddress]) => {
-      this._stopPollingData();
-
-      if (newAddress === undefined) {
-        return this._resetState();
-      }
-
-      this._initialize(newAddress);
-    });
-
-    window.ethereum.on("networkChanged", ([networkId]) => {
-      this._stopPollingData();
-      this._resetState();
-    });
+  _onError(error) {
+    window.alert(error);
   }
 
-  _initialize() {
-  }
-
-  _stopPollingData() {
-  }
-
-  _checkNetwork() {
-    if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
-      return true;
-    }
-
+  _onConnect(state) {
+    console.log("connected: " + state.selectedAddress);
     this.setState({
-      networkError: 'Please connect Metamask to Localhost:8545'
+      selectedAddress: state.selectedAddress
     });
-
-    return false;
   }
 
-  _resetState() {
+  _onDisconnect() {
+    console.log("disconnected");
     this.setState(this.initialState);
   }
 }
