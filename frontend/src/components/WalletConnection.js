@@ -1,6 +1,8 @@
 import React from 'react';
 
-const HARDHAT_NETWORK_ID = '31337';
+const supportedChains = {
+  '1337': 'Localhost'
+}
 
 export class WalletConnection extends React.Component {
   constructor(props) {
@@ -9,6 +11,7 @@ export class WalletConnection extends React.Component {
     this.initialState = {
       initialized: false,
       selectedAddress: undefined,
+      chainId: undefined,
       network: undefined
     }
 
@@ -26,7 +29,7 @@ export class WalletConnection extends React.Component {
       );
     } else if (this.state.initialized) {
       return (
-        <button className="btn btn-outline-secondary" disabled>Connected to {this.state.network}</button>
+        <button className="btn btn-outline-secondary" disabled>{this._currentChainLabel()}</button>
       );
     } else {
       return (<div></div>);
@@ -34,14 +37,7 @@ export class WalletConnection extends React.Component {
   }
 
   async _connectWallet() {
-    const { ethereum } = window;
-    const [selectedAddress] = await ethereum.request({ method: 'eth_requestAccounts' });
-
-    if (!this._checkNetwork()) {
-      return;
-    }
-
-    this._connectTo(selectedAddress);
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
   }
 
   _isMetaMaskInstalled() {
@@ -49,43 +45,40 @@ export class WalletConnection extends React.Component {
     return Boolean(ethereum && ethereum.isMetaMask);
   }
 
-  _checkNetwork() {
-    if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
-      return true;
-    }
-
-    this.props.onError('Please connect Metamask to Localhost:8545 (current network: ' + window.ethereum.networkVersion + ')');
-
-    return false;
-  }
-
   async _initializeAccounts() {
     const { ethereum } = window;
 
     ethereum.on("accountsChanged", ([newAddress]) => {
-      this.props.onDisconnect();
+      if (newAddress !== this.state.selectedAddress
+        && this.state.selectedAddress !== undefined) {
+        this._disconnect();
+      }
 
-      this._connectTo(newAddress);
+      if (newAddress !== undefined) {
+        this._connectTo(newAddress);
+      }
     });
 
-    ethereum.on("chainChanged", ([networkId]) => {
-      this._disconnect()
+    ethereum.on("chainChanged", ([_chainId]) => {
+      window.location.reload();
     });
 
+    const chainId = await ethereum.request({ method: 'eth_chainId' });
     const accounts = await ethereum.request({ method: 'eth_accounts' });
 
     if (accounts.length === 0) {
       this._disconnect();
     } else {
-      this._connectTo(accounts[0]);
+      this._connectTo(accounts[0], chainId);
     }
   }
 
-  _connectTo(address) {
+  _connectTo(address, chainId) {
     this.setState({
       initialized: true,
       network: "Localhost", // TODO make dynamic later
-      selectedAddress: address
+      selectedAddress: address,
+      chainId: parseInt(chainId)
     });
     this.props.onConnect(this.state);
   }
@@ -97,6 +90,16 @@ export class WalletConnection extends React.Component {
       network: undefined
     });
     this.props.onDisconnect();
+  }
+
+  _currentChainLabel() {
+    const name = supportedChains[this.state.chainId];
+
+    if (name === undefined) {
+      return 'Unsupported Chain';
+    }
+
+    return 'Connected to ' + name;
   }
 
   componentDidMount() {
