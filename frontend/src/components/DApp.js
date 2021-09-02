@@ -10,7 +10,7 @@ export class DApp extends React.Component {
     super(props);
 
     this.initialState = {
-      connected: undefined,
+      connectionStatus: undefined,
       selectedAddress: undefined,
       networkError: undefined,
     };
