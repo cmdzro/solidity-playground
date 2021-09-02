@@ -1,4 +1,5 @@
 import React from 'react';
+import { appState } from './DApp';
 
 class ContentComponent extends React.Component {
   isConnected = false;
@@ -51,8 +52,12 @@ export class BasicToken extends ContentComponent {
   render() {
     super.render();
 
-    if (!this.isConnected) {
+    if (this.props.data.appState === appState.CONNECTING) {
       return (<div>Loading</div>);
+    }
+
+    if (this.props.data.appState === appState.DISCONNECTED) {
+      return (<div>Please connect your wallet first!</div>);
     }
 
     return (

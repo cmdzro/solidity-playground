@@ -5,12 +5,18 @@ import { WalletConnection } from './WalletConnection';
 import Home from './Home';
 import { BasicToken } from './BasicToken';
 
+export const appState = {
+  CONNECTING: "connecting",
+  CONNECTED: "connected",
+  DISCONNECTED: "disconnected"
+}
+
 export class DApp extends React.Component {
   constructor(props) {
     super(props);
 
     this.initialState = {
-      connectionStatus: undefined,
+      appState: appState.DISCONNECTED,
       selectedAddress: undefined,
       networkError: undefined,
     };
@@ -27,6 +33,7 @@ export class DApp extends React.Component {
               <a className="navbar-brand" href="/">Solidity Playground</a>
               <form className="d-flex">
                 <WalletConnection
+                  onConnecting={() => this._onConnecting()}
                   onConnect={(state) => this._onConnect(state)}
                   onDisconnect={() => this._onDisconnect()}
                   onError={(error) => this._onError(error)}
@@ -53,9 +60,17 @@ export class DApp extends React.Component {
     window.alert(error);
   }
 
+  _onConnecting() {
+    console.log("connecting...");
+    this.setState({
+      appState: appState.CONNECTING
+    });
+  }
+
   _onConnect(state) {
     console.log("connected: " + state.selectedAddress);
     this.setState({
+      appState: appState.CONNECTED,
       selectedAddress: state.selectedAddress
     });
   }

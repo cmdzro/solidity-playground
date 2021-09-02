@@ -48,6 +48,8 @@ export class WalletConnection extends React.Component {
   async _initializeAccounts() {
     const { ethereum } = window;
 
+    this.props.onConnecting();
+
     ethereum.on("accountsChanged", ([newAddress]) => {
       if (newAddress !== this.state.selectedAddress
         && this.state.selectedAddress !== undefined) {
