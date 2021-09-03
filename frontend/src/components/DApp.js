@@ -4,12 +4,7 @@ import { Navigation } from './Navigation';
 import { WalletConnection } from './WalletConnection';
 import Home from './Home';
 import { BasicToken } from './BasicToken';
-
-export const appState = {
-  CONNECTING: "connecting",
-  CONNECTED: "connected",
-  DISCONNECTED: "disconnected"
-}
+import { appState } from '../core/constants.js';
 
 export class DApp extends React.Component {
   constructor(props) {

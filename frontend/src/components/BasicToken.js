@@ -1,5 +1,5 @@
 import React from 'react';
-import { appState } from './DApp';
+import { appState } from '../core/constants.js';
 import { ethers } from "ethers";
 
 import TokenArtifact from "../contracts/Token.json";
