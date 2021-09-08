@@ -157,6 +157,16 @@ describe("Crowdfunding Contract", () => {
         await expect(await contract.connect(addr1).refund())
           .to.changeEtherBalance(addr1, ethers.utils.parseEther("5.0"));
       });
+
+      describe("And already refunded", () => {
+        beforeEach(async () => {
+          await contract.connect(addr1).refund();
+        });
+
+        it("Should fail to refund again", async () => {
+          await expect(contract.connect(addr1).refund()).to.be.revertedWith("Nothing to refund");
+        });
+      });
     });
   });
 });
