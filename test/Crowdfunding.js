@@ -103,7 +103,6 @@ describe("Crowdfunding Contract", () => {
       });
 
       it("should revert if claimer is not owner", async () => {
-
         await expect(contract.connect(addr1).claimFunds()).to.be.revertedWith("Not the owner");
       });
 
@@ -115,6 +114,18 @@ describe("Crowdfunding Contract", () => {
   });
 
   describe("Refund", () => {
+    describe("With time not yet passed", () => {
+      beforeEach(async () => {
+        // supply funds
+        const value = ethers.utils.parseEther("5.0");
+        await contract.connect(addr1).pledge(value, {value: value});
+      });
+
+      it("should revert", async () => {
+        await expect(contract.connect(addr1).refund()).to.be.revertedWith("Funding period not finished yet");
+      });
+    });
+
     describe("With not enough funding and time passed", () => {
       beforeEach(async () => {
         // supply funds

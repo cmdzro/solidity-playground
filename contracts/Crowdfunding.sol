@@ -30,6 +30,7 @@ contract Crowdfunding {
 
   function refund() public {
     // conditions
+    require(block.timestamp >= deadline, "Funding period not finished yet");
 
     // effect
     uint256 amount = pledgeOf[msg.sender];
