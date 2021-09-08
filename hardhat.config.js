@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 
 require("@nomiclabs/hardhat-waffle");
+require("hardhat-watcher");
 
 const accounts = readJson(`./accounts.json`);
 
@@ -16,6 +17,13 @@ module.exports = {
       accounts: [`0x${accounts.ropsten.privateKey}`],
     },
   },
+  watcher: {
+    test: {
+      tasks: [{ command: 'test', params: { testFiles: ['{path}'] } }],
+      files: ['./test/**/*'],
+      verbose: true
+    }
+  }
 };
 
 function readJson(fileName) {

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx hardhat test",
+    "test-watch": "npx hardhat watch test",
     "lint": "./node_modules/.bin/solhint -f table contracts/**/*.sol",
     "prettier:check": "npx prettier -c 'contracts/**/*.sol'",
     "prettier:write": "prettier --write 'contracts/**/*.sol'"
@@ -27,6 +28,7 @@
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.5",
     "hardhat": "^2.6.1",
+    "hardhat-watcher": "^2.1.1",
     "prettier": "^2.3.2",
     "prettier-plugin-solidity": "^1.0.0-beta.17",
     "solhint": "^3.3.6",
