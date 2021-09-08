@@ -44,6 +44,14 @@ describe("Crowdfunding Contract", () => {
       expect(await ethers.provider.getBalance(contract.address)).to.equal(value);
     });
 
+    it("Should emit PledgeCreated event", async () => {
+      const value = ethers.utils.parseEther("7.0");
+
+      await expect(contract.pledge(value, {value: value}))
+        .to.emit(contract, "PledgeCreated")
+        .withArgs(owner.address, value);
+    });
+
     it("Should revert if amount mismatches", async () => {
       const value = ethers.utils.parseEther("7.0");
 
@@ -64,20 +72,20 @@ describe("Crowdfunding Contract", () => {
   });
 
   describe("Claim funds", () => {
-    describe("With enough funding", () => {
+    describe("With enough funding but before deadline is reached", () => {
       const value = ethers.utils.parseEther("10.0");
 
       beforeEach(async () => {
         await contract.connect(addr1).pledge(value, {value: value});
       });
 
-      it("Should revert if deadline did not pass yet", async () => {
+      it("Should revert", async () => {
         await expect(contract.claimFunds())
           .to.be.revertedWith("Funding period not finished yet");
       });
     });
 
-    describe("With insufficient funds", () => {
+    describe("With insufficient funds but after deadline", () => {
       beforeEach(async () => {
         const value = ethers.utils.parseEther("5.0");
         await contract.connect(addr1).pledge(value, {value: value});
@@ -88,13 +96,13 @@ describe("Crowdfunding Contract", () => {
         await ethers.provider.send('evm_mine');
       });
 
-      it("Should revert if funding goal was not met", async () => {
+      it("Should revert", async () => {
         await expect(contract.claimFunds())
           .to.be.revertedWith("Funding goal missed");
       });
     });
 
-    describe("With enough funding and time passed", () => {
+    describe("With enough funding and after deadline", () => {
       beforeEach(async () => {
         // supply enough funds
         const value = ethers.utils.parseEther("15.0");
@@ -114,6 +122,12 @@ describe("Crowdfunding Contract", () => {
       it("Should transfer funds", async () => {
         await expect(await contract.claimFunds())
           .to.changeEtherBalance(owner, ethers.utils.parseEther("15.0"));
+      });
+
+      it("Should emit FundsClaimed event", async () => {
+        await expect(contract.claimFunds())
+          .to.emit(contract, "FundsClaimed")
+          .withArgs(ethers.utils.parseEther("15.0"));
       });
     });
   });
@@ -181,6 +195,12 @@ describe("Crowdfunding Contract", () => {
       it("Should refund", async () => {
         await expect(await contract.connect(addr1).refund())
           .to.changeEtherBalance(addr1, ethers.utils.parseEther("5.0"));
+      });
+
+      it("Should emit PledgeRefunded event", async () => {
+        await expect(contract.connect(addr1).refund())
+          .to.emit(contract, "PledgeRefunded")
+          .withArgs(addr1.address, ethers.utils.parseEther("5.0"));
       });
 
       describe("And already refunded", () => {

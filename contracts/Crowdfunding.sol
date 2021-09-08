@@ -2,6 +2,10 @@
 pragma solidity 0.7.3;
 
 contract Crowdfunding {
+  event PledgeCreated(address contributor, uint256 amount);
+  event FundsClaimed(uint256 amount);
+  event PledgeRefunded(address contributor, uint256 amount);
+
   address public owner;
   uint256 public deadline;
   uint256 public goal;
@@ -20,6 +24,7 @@ contract Crowdfunding {
             "Funding period ended");
 
     pledgeOf[msg.sender] = amount;
+    emit PledgeCreated(msg.sender, amount);
   }
 
   function claimFunds() public {
@@ -30,7 +35,9 @@ contract Crowdfunding {
     require(address(this).balance >= goal,
             "Funding goal missed");
 
-    msg.sender.transfer(address(this).balance);
+    uint256 amount = address(this).balance;
+    msg.sender.transfer(amount);
+    emit FundsClaimed(amount);
   }
 
   function refund() public {
@@ -49,5 +56,6 @@ contract Crowdfunding {
 
     // interaction
     msg.sender.transfer(amount);
+    emit PledgeRefunded(msg.sender, amount);
   }
 }
