@@ -39,6 +39,8 @@ contract Crowdfunding {
     // conditions
     require(block.timestamp >= deadline,
             "Funding period not finished yet");
+    require(address(this).balance < goal,
+            "Funding was successfull, nothing to refund");
     require(amount > 0,
             "Nothing to refund");
 
