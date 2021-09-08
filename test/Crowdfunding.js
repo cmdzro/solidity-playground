@@ -116,7 +116,7 @@ describe("Crowdfunding Contract", () => {
 
       it("should revert if claimer is not owner", async () => {
         await expect(contract.connect(addr1).claimFunds())
-          .to.be.revertedWith("Not the owner");
+          .to.be.revertedWith("Ownable: caller is not the owner");
       });
 
       it("Should transfer funds", async () => {

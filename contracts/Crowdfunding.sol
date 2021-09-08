@@ -1,21 +1,16 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.7.3;
+pragma solidity 0.8.0;
 
-contract Crowdfunding {
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract Crowdfunding is Ownable {
   event PledgeCreated(address contributor, uint256 amount);
   event FundsClaimed(uint256 amount);
   event PledgeRefunded(address contributor, uint256 amount);
 
-  address public owner;
   uint256 public deadline;
   uint256 public goal;
   mapping(address => uint256) public pledgeOf;
-
-  modifier onlyOwner {
-    require(msg.sender == owner,
-            "Not the owner");
-    _;
-  }
 
   modifier deadlineReached {
     require(block.timestamp >= deadline,
@@ -24,7 +19,6 @@ contract Crowdfunding {
   }
 
   constructor(uint256 _numberOfDays, uint256 _goal) {
-    owner = msg.sender;
     deadline = block.timestamp + (_numberOfDays * 1 days);
     goal = _goal;
   }
@@ -44,7 +38,7 @@ contract Crowdfunding {
             "Funding goal missed");
 
     uint256 amount = address(this).balance;
-    msg.sender.transfer(amount);
+    payable(msg.sender).transfer(amount);
     emit FundsClaimed(amount);
   }
 
@@ -61,7 +55,7 @@ contract Crowdfunding {
     pledgeOf[msg.sender] = 0;
 
     // interaction
-    msg.sender.transfer(amount);
+    payable(msg.sender).transfer(amount);
     emit PledgeRefunded(msg.sender, amount);
   }
 }
