@@ -27,4 +27,15 @@ contract Crowdfunding {
 
     msg.sender.transfer(address(this).balance);
   }
+
+  function refund() public {
+    // conditions
+
+    // effect
+    uint256 amount = pledgeOf[msg.sender];
+    pledgeOf[msg.sender] = 0;
+
+    // interaction
+    msg.sender.transfer(amount);
+  }
 }
