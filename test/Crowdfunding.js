@@ -126,6 +126,19 @@ describe("Crowdfunding Contract", () => {
       });
     });
 
+    describe("With time passed but nothing pledged before", () => {
+      beforeEach(async () => {
+        // move forward in time to simulate funding end
+        const fourDays = 4 * 24 * 60 * 60;
+        await ethers.provider.send('evm_increaseTime', [fourDays]);
+        await ethers.provider.send('evm_mine');
+      });
+
+      it("Should revert", async () => {
+        await expect(contract.connect(addr1).refund()).to.be.revertedWith("Nothing to refund");
+      });
+    });
+
     describe("With not enough funding and time passed", () => {
       beforeEach(async () => {
         // supply funds

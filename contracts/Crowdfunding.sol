@@ -14,26 +14,35 @@ contract Crowdfunding {
   }
 
   function pledge(uint256 amount) public payable {
-    require(amount == msg.value, "Amount mismatch");
-    require(block.timestamp < deadline, "Funding period ended");
+    require(amount == msg.value,
+            "Amount mismatch");
+    require(block.timestamp < deadline,
+            "Funding period ended");
 
     pledgeOf[msg.sender] = amount;
   }
 
   function claimFunds() public {
-    require(msg.sender == owner, "Not the owner");
-    require(block.timestamp >= deadline, "Funding period not finished yet");
-    require(address(this).balance >= goal, "Funding goal missed");
+    require(msg.sender == owner,
+            "Not the owner");
+    require(block.timestamp >= deadline,
+            "Funding period not finished yet");
+    require(address(this).balance >= goal,
+            "Funding goal missed");
 
     msg.sender.transfer(address(this).balance);
   }
 
   function refund() public {
+    uint256 amount = pledgeOf[msg.sender];
+
     // conditions
-    require(block.timestamp >= deadline, "Funding period not finished yet");
+    require(block.timestamp >= deadline,
+            "Funding period not finished yet");
+    require(amount > 0,
+            "Nothing to refund");
 
     // effect
-    uint256 amount = pledgeOf[msg.sender];
     pledgeOf[msg.sender] = 0;
 
     // interaction
