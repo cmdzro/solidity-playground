@@ -47,7 +47,8 @@ describe("Crowdfunding Contract", () => {
     it("Should revert if amount mismatches", async () => {
       const value = ethers.utils.parseEther("7.0");
 
-      await expect(contract.pledge(3, {value: value})).to.be.revertedWith("Amount mismatch");
+      await expect(contract.pledge(3, {value: value}))
+        .to.be.revertedWith("Amount mismatch");
     });
 
     it("Should revert if deadline passed", async () => {
@@ -57,7 +58,8 @@ describe("Crowdfunding Contract", () => {
       await ethers.provider.send('evm_increaseTime', [fourDays]);
       await ethers.provider.send('evm_mine');
 
-      await expect(contract.pledge(value, {value: value})).to.be.revertedWith("Funding period ended");
+      await expect(contract.pledge(value, {value: value}))
+        .to.be.revertedWith("Funding period ended");
     });
   });
 
@@ -70,7 +72,8 @@ describe("Crowdfunding Contract", () => {
       });
 
       it("Should revert if deadline did not pass yet", async () => {
-        await expect(contract.claimFunds()).to.be.revertedWith("Funding period not finished yet");
+        await expect(contract.claimFunds())
+          .to.be.revertedWith("Funding period not finished yet");
       });
     });
 
@@ -86,7 +89,8 @@ describe("Crowdfunding Contract", () => {
       });
 
       it("Should revert if funding goal was not met", async () => {
-        await expect(contract.claimFunds()).to.be.revertedWith("Funding goal missed");
+        await expect(contract.claimFunds())
+          .to.be.revertedWith("Funding goal missed");
       });
     });
 
@@ -103,7 +107,8 @@ describe("Crowdfunding Contract", () => {
       });
 
       it("should revert if claimer is not owner", async () => {
-        await expect(contract.connect(addr1).claimFunds()).to.be.revertedWith("Not the owner");
+        await expect(contract.connect(addr1).claimFunds())
+          .to.be.revertedWith("Not the owner");
       });
 
       it("Should transfer funds", async () => {
@@ -122,7 +127,8 @@ describe("Crowdfunding Contract", () => {
       });
 
       it("should revert", async () => {
-        await expect(contract.connect(addr1).refund()).to.be.revertedWith("Funding period not finished yet");
+        await expect(contract.connect(addr1).refund())
+          .to.be.revertedWith("Funding period not finished yet");
       });
     });
 
@@ -135,7 +141,8 @@ describe("Crowdfunding Contract", () => {
       });
 
       it("Should revert", async () => {
-        await expect(contract.connect(addr1).refund()).to.be.revertedWith("Nothing to refund");
+        await expect(contract.connect(addr1).refund())
+          .to.be.revertedWith("Nothing to refund");
       });
     });
 
@@ -152,7 +159,8 @@ describe("Crowdfunding Contract", () => {
       });
 
       it("Should revert", async () => {
-        await expect(contract.connect(addr1).refund()).to.be.revertedWith("Funding was successfull, nothing to refund");
+        await expect(contract.connect(addr1).refund())
+          .to.be.revertedWith("Funding was successfull, nothing to refund");
       });
     });
 
@@ -181,7 +189,8 @@ describe("Crowdfunding Contract", () => {
         });
 
         it("Should fail to refund again", async () => {
-          await expect(contract.connect(addr1).refund()).to.be.revertedWith("Nothing to refund");
+          await expect(contract.connect(addr1).refund())
+            .to.be.revertedWith("Nothing to refund");
         });
       });
     });
