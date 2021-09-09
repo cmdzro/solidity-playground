@@ -3,6 +3,7 @@ const path = require('path')
 
 require("@nomiclabs/hardhat-waffle");
 require("hardhat-watcher");
+require("hardhat-gas-reporter");
 
 const accounts = readJson(`./accounts.json`);
 
@@ -23,6 +24,11 @@ module.exports = {
       files: ['./test/**/*'],
       verbose: true
     }
+  },
+  gasReporter: {
+    enabled: false,
+    currency: 'EUR',
+    coinmarketcap: `${accounts.coinmarketcap.apiKey}`
   }
 };
 
