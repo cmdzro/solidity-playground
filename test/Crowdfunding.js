@@ -1,6 +1,30 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
+describe("CrowdfundingFactory Contract", () => {
+  let owner;
+  let contractFactory;
+  let contract;
+
+  const goal = ethers.utils.parseEther("10.0");
+
+  beforeEach(async () => {
+      [owner] = await ethers.getSigners();
+      contractFactory = await ethers.getContractFactory("CrowdfundingFactory");
+      contract = await contractFactory.deploy();
+  });
+
+  it("Should create instance", async () => {
+    const tx = await contract.createCrowdfunding(4, goal);
+    const { events } = await tx.wait();
+    const { address } = events.find(Boolean);
+    const { interface } = await ethers.getContractFactory("Crowdfunding");
+    const instance = new ethers.Contract(address, interface, owner);
+
+    expect(await instance.goal()).to.equal(goal);
+  });
+});
+
 describe("Crowdfunding Contract", () => {
   let owner;
   let addr1;

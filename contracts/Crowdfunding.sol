@@ -3,6 +3,13 @@ pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+contract CrowdfundingFactory {
+    function createCrowdfunding(uint256 _numberOfDays, uint256 _goal) external returns (address) {
+        Crowdfunding crowdfunding = new Crowdfunding(_numberOfDays, _goal);
+        return address(crowdfunding);
+    }
+}
+
 contract Crowdfunding is Ownable {
   event PledgeCreated(address contributor, uint256 amount);
   event FundsClaimed(uint256 amount);
