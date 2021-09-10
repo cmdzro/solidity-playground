@@ -2,14 +2,21 @@
 pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 contract CrowdfundingFactory {
-    function createCrowdfunding(uint256 _numberOfDays, uint256 _goal) external returns (address) {
-        Crowdfunding crowdfunding = new Crowdfunding();
-        crowdfunding.initialize(_numberOfDays, _goal);
-        return address(crowdfunding);
-    }
+  address immutable crowdfundingImplementation;
+
+  constructor() {
+    crowdfundingImplementation = address(new Crowdfunding());
+  }
+
+  function createCrowdfunding(uint256 _numberOfDays, uint256 _goal) external returns (address) {
+    address clone = Clones.clone(crowdfundingImplementation);
+    Crowdfunding(clone).initialize(_numberOfDays, _goal);
+    return clone;
+  }
 }
 
 contract Crowdfunding is Ownable, Initializable {

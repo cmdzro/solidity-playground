@@ -1,22 +1,26 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
+async function deploy(name, ...params) {
+  const Contract = await ethers.getContractFactory(name);
+  return await Contract.deploy(...params).then(f => f.deployed());
+}
+
 describe("CrowdfundingFactory Contract", () => {
   let owner;
-  let contractFactory;
   let contract;
 
   const goal = ethers.utils.parseEther("10.0");
 
   beforeEach(async () => {
-      [owner] = await ethers.getSigners();
-      contractFactory = await ethers.getContractFactory("CrowdfundingFactory");
-      contract = await contractFactory.deploy();
+    [owner] = await ethers.getSigners();
+    contract = await deploy("CrowdfundingFactory");
   });
 
-  it("Should create instance", async () => {
-    const tx = await contract.createCrowdfunding(4, goal);
+  xit("Should create instance", async () => {
+    const tx = await contract.createCrowdfunding(4, goal, {from: owner.address});
     const { events } = await tx.wait();
+    console.log(await tx.wait());
     const { address } = events.find(Boolean);
     const { interface } = await ethers.getContractFactory("Crowdfunding");
     const instance = new ethers.Contract(address, interface, owner);
@@ -30,16 +34,14 @@ describe("Crowdfunding Contract", () => {
   let addr1;
   let addr2;
   let addrs;
-  let contractFactory;
   let contract;
 
   const goal = ethers.utils.parseEther("10.0");
 
   beforeEach(async () => {
-      [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
-      contractFactory = await ethers.getContractFactory("Crowdfunding");
-      contract = await contractFactory.deploy();
-      await contract.initialize(3, goal);
+    [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
+    contract = await deploy("Crowdfunding");
+    await contract.initialize(3, goal);
   });
 
   describe("Deployment", () => {
