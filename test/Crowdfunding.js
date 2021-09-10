@@ -38,7 +38,8 @@ describe("Crowdfunding Contract", () => {
   beforeEach(async () => {
       [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
       contractFactory = await ethers.getContractFactory("Crowdfunding");
-      contract = await contractFactory.deploy(3, goal);
+      contract = await contractFactory.deploy();
+      await contract.initialize(3, goal);
   });
 
   describe("Deployment", () => {

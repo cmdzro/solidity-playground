@@ -2,15 +2,17 @@
 pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 contract CrowdfundingFactory {
     function createCrowdfunding(uint256 _numberOfDays, uint256 _goal) external returns (address) {
-        Crowdfunding crowdfunding = new Crowdfunding(_numberOfDays, _goal);
+        Crowdfunding crowdfunding = new Crowdfunding();
+        crowdfunding.initialize(_numberOfDays, _goal);
         return address(crowdfunding);
     }
 }
 
-contract Crowdfunding is Ownable {
+contract Crowdfunding is Ownable, Initializable {
   event PledgeCreated(address contributor, uint256 amount);
   event FundsClaimed(uint256 amount);
   event PledgeRefunded(address contributor, uint256 amount);
@@ -25,7 +27,7 @@ contract Crowdfunding is Ownable {
     _;
   }
 
-  constructor(uint256 _numberOfDays, uint256 _goal) {
+  function initialize(uint256 _numberOfDays, uint256 _goal) public initializer {
     deadline = block.timestamp + (_numberOfDays * 1 days);
     goal = _goal;
   }
