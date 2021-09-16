@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 contract CrowdfundingFactory {
-  address immutable crowdfundingImplementation;
+  address internal immutable crowdfundingImplementation;
 
   constructor() {
     crowdfundingImplementation = address(new Crowdfunding());
@@ -29,20 +29,20 @@ contract Crowdfunding is Ownable, Initializable {
   mapping(address => uint256) public pledgeOf;
 
   modifier deadlineReached {
-    require(block.timestamp >= deadline,
+    require(block.timestamp >= deadline, // solhint-disable-line not-rely-on-time
             "Funding period not finished yet");
     _;
   }
 
   function initialize(uint256 _numberOfDays, uint256 _goal) public initializer {
-    deadline = block.timestamp + (_numberOfDays * 1 days);
+    deadline = block.timestamp + (_numberOfDays * 1 days); // solhint-disable-line not-rely-on-time
     goal = _goal;
   }
 
   function pledge(uint256 amount) public payable {
     require(amount == msg.value,
             "Amount mismatch");
-    require(block.timestamp < deadline,
+    require(block.timestamp < deadline, // solhint-disable-line not-rely-on-time
             "Funding period ended");
 
     pledgeOf[msg.sender] = amount;
@@ -63,7 +63,7 @@ contract Crowdfunding is Ownable, Initializable {
 
     // conditions
     require(address(this).balance < goal,
-            "Funding was successfull, nothing to refund");
+            "Funding ended, nothing to refund");
     require(amount > 0,
             "Nothing to refund");
 
