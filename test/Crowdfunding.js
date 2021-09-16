@@ -201,7 +201,7 @@ describe("Crowdfunding Contract", () => {
 
       it("Should revert", async () => {
         await expect(contract.connect(addr1).refund())
-          .to.be.revertedWith("Funding ended, nothing to refund");
+          .to.be.revertedWith("Funding goal achieved already");
       });
     });
 

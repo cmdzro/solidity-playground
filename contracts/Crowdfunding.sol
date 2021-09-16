@@ -63,7 +63,7 @@ contract Crowdfunding is Ownable, Initializable {
 
     // conditions
     require(address(this).balance < goal,
-            "Funding ended, nothing to refund");
+            "Funding goal achieved already");
     require(amount > 0,
             "Nothing to refund");
 
