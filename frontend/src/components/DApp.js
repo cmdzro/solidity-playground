@@ -1,5 +1,6 @@
 import React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Navbar } from 'react-bootstrap'
+import { HashRouter as Router, Route, Link, Redirect } from "react-router-dom";
 import { Navigation } from './Navigation';
 import { WalletConnection } from './WalletConnection';
 import Home from './Home';
@@ -23,9 +24,9 @@ export class DApp extends React.Component {
     return (
       <Router>
         <div className="container-fluid">
-          <nav className="navbar navbar-light bg-light">
+          <Navbar className="navbar navbar-light bg-light">
             <div className="container-fluid">
-              <a className="navbar-brand" href="/">Solidity Playground</a>
+              <Navbar.Brand className="navbar-brand" as={Link} to="/Home">Solidity Playground</Navbar.Brand>
               <form className="d-flex">
                 <WalletConnection
                   onConnecting={() => this._onConnecting()}
@@ -35,15 +36,16 @@ export class DApp extends React.Component {
                 />
               </form>
             </div>
-          </nav>
-          <hr/>
+          </Navbar>
+          <hr />
           <div className="row">
             <div className="col-2">
               <Navigation></Navigation>
             </div>
             <div className="col">
-              <Route exact path="/" component={Home}></Route>
-              <Route path="/BasicToken" render={() => <BasicToken data={this.state} />}></Route>
+              <Route exact path="/" render={() => { return (<Redirect to="/Home" />) }} />
+              <Route exact path="/Home" component={Home}></Route>
+              <Route exact path="/BasicToken" render={() => <BasicToken data={this.state} />}></Route>
             </div>
           </div>
         </div>
