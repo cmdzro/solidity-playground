@@ -1,10 +1,16 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
+/**
+ * @title CrowdfundingFactory
+ * @dev This factory holds the implementation contract (for the logic) and creates clones of it for the individual 
+ * states.
+ */
 contract CrowdfundingFactory {
   address internal immutable crowdfundingImplementation;
 
@@ -19,6 +25,12 @@ contract CrowdfundingFactory {
   }
 }
 
+/**
+ * @title Crowdfunding
+ * @dev This contract allows to collect funds for a specific project (via {pledge} function). There is a time limit for
+ * the fundraising phase and after that the received funds are only accessible for the project owner if a funding goal 
+ * was met. Otherwise the contributors can request a {refund} again.
+ */
 contract Crowdfunding is Ownable, Initializable {
   event PledgeCreated(address contributor, uint256 amount);
   event FundsClaimed(uint256 amount);
@@ -34,21 +46,32 @@ contract Crowdfunding is Ownable, Initializable {
     _;
   }
 
+  /**
+   * @dev Constructor replacement as part of the clone factory pattern
+   */
   function initialize(uint256 _numberOfDays, uint256 _goal) public initializer {
     deadline = block.timestamp + (_numberOfDays * 1 days); // solhint-disable-line not-rely-on-time
     goal = _goal;
   }
 
+  /**
+   * @dev A contributor can pledge ETH for the project
+   * @param amount the amount of ETH to ensure it's correct
+   */
   function pledge(uint256 amount) public payable {
     require(amount == msg.value,
             "Amount mismatch");
     require(block.timestamp < deadline, // solhint-disable-line not-rely-on-time
             "Funding period ended");
 
+    // @FIXME test multiple calls to this function
     pledgeOf[msg.sender] = amount;
     emit PledgeCreated(msg.sender, amount);
   }
 
+  /**
+   * @dev If the funding ended successfully the project owner can withdraw the collected funds.
+   */
   function claimFunds() public onlyOwner deadlineReached {
     require(address(this).balance >= goal,
             "Funding goal missed");
@@ -58,6 +81,9 @@ contract Crowdfunding is Ownable, Initializable {
     emit FundsClaimed(amount);
   }
 
+  /**
+   * @dev If the funding ended unsuccessfully a contributor can request their `refund`.
+   */
   function refund() public deadlineReached {
     uint256 amount = pledgeOf[msg.sender];
 

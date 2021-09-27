@@ -12,3 +12,4 @@ Learning about smart contract programming
 7. Once again run: `npm install`
 8. Launch server: `npm run start`
 9. Open `http://localhost:3000/` to test the frontend
+    
