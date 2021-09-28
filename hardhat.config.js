@@ -54,7 +54,7 @@ module.exports = {
     }
   },
   gasReporter: {
-    enabled: false,
+    enabled: !!process.env.REPORT_GAS,
     currency: 'EUR',
     coinmarketcap: `${accounts.coinmarketcap.apiKey}`
   }

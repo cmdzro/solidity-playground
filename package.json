@@ -4,8 +4,10 @@
   "description": "Learning about smart contract programming",
   "main": "index.js",
   "scripts": {
-    "test": "npx hardhat test --network hardhat",
-    "test-watch": "npx hardhat watch test",
+    "test": "npm run test:unit",
+    "test:unit": "hardhat test --network hardhat",
+    "test:gas": "REPORT_GAS=true hardhat test --network localhost",
+    "test:watch": "npx hardhat watch test",
     "lint": "npm run lint:sol:solhint",
     "lint:sol:solhint": "./node_modules/.bin/solhint contracts/**/*.sol",
     "lint:sol:solhint:fix": "npm run lint:sol:solhint --fix",
