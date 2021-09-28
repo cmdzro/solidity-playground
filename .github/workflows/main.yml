@@ -31,7 +31,7 @@ jobs:
         run: npm run test
 
   coverage:
-    name: Solidity tests and linters
+    name: Solidity coverage
     runs-on: ubuntu-latest
 
     steps:
