@@ -7,11 +7,12 @@
     "test": "npm run test:unit",
     "test:unit": "hardhat test --network hardhat",
     "test:gas": "REPORT_GAS=true hardhat test --network localhost",
-    "test:watch": "npx hardhat watch test",
+    "test:watch": "hardhat watch test",
+    "test:coverage": "hardhat coverage --network coverage --testfiles test",
     "lint": "npm run lint:sol:solhint",
     "lint:sol:solhint": "./node_modules/.bin/solhint contracts/**/*.sol",
     "lint:sol:solhint:fix": "npm run lint:sol:solhint --fix",
-    "prettier:check": "npx prettier -c 'contracts/**/*.sol'",
+    "prettier:check": "prettier -c 'contracts/**/*.sol'",
     "prettier:write": "prettier --write 'contracts/**/*.sol'"
   },
   "repository": {
@@ -38,7 +39,8 @@
     "prettier": "^2.4.1",
     "prettier-plugin-solidity": "^1.0.0-beta.17",
     "solhint": "^3.3.6",
-    "solhint-plugin-prettier": "^0.0.5"
+    "solhint-plugin-prettier": "^0.0.5",
+    "solidity-coverage": "^0.7.17"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.3.1",

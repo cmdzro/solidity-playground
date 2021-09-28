@@ -4,6 +4,7 @@ const path = require('path')
 require("@nomiclabs/hardhat-waffle");
 require("hardhat-watcher");
 require("hardhat-gas-reporter");
+require("solidity-coverage");
 
 const NETWORK_NAME = getNetworkName()
 const ETH_ACCOUNT_NAME = process.env.ETH_ACCOUNT_NAME
@@ -28,6 +29,9 @@ const getNetConfig = (networkName, ethAccountName) => {
   }
   const byNetName = {
     dev,
+    coverage: {
+      url: 'http://localhost:8555'
+    },
     ropsten: {
       ...base,
       url: `https://eth-ropsten.alchemyapi.io/v2/${accounts.alchemy.apiKey}`,
