@@ -4,7 +4,7 @@
   "description": "Learning about smart contract programming",
   "main": "index.js",
   "scripts": {
-    "test": "npx hardhat test",
+    "test": "npx hardhat test --network hardhat",
     "test-watch": "npx hardhat watch test",
     "lint": "./node_modules/.bin/solhint -f table contracts/**/*.sol",
     "prettier:check": "npx prettier -c 'contracts/**/*.sol'",

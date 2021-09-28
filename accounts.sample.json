@@ -1,0 +1,16 @@
+{
+  "eth": {
+    "dev": {
+      "mnemonic": "arena never chef monitor boat toss current ice document typical box angry",
+      "path": "m/44'/60'/0'/0",
+      "initialIndex": 0,
+      "count": 20
+    }
+  },
+  "alchemy": {
+    "apiKey": "API_KEY"
+  },
+  "coinmarketcap": {
+    "apiKey": "API_KEY"
+  }
+}
