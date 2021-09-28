@@ -208,9 +208,11 @@ describe("Crowdfunding Contract", () => {
     describe("With not enough funding and time passed", () => {
       beforeEach(async () => {
         // supply funds
-        const addr1Value = ethers.utils.parseEther("5.0");
+        const addr1Value1 = ethers.utils.parseEther("5.0");
+        const addr1Value2 = ethers.utils.parseEther("1.0");
         const addr2Value = ethers.utils.parseEther("3.0");
-        await contract.connect(addr1).pledge(addr1Value, {value: addr1Value});
+        await contract.connect(addr1).pledge(addr1Value1, {value: addr1Value1});
+        await contract.connect(addr1).pledge(addr1Value2, {value: addr1Value2});
         await contract.connect(addr2).pledge(addr2Value, {value: addr2Value});
 
         // move forward in time to simulate funding end
@@ -221,13 +223,13 @@ describe("Crowdfunding Contract", () => {
 
       it("Should refund", async () => {
         await expect(await contract.connect(addr1).refund())
-          .to.changeEtherBalance(addr1, ethers.utils.parseEther("5.0"));
+          .to.changeEtherBalance(addr1, ethers.utils.parseEther("6.0"));
       });
 
       it("Should emit PledgeRefunded event", async () => {
         await expect(contract.connect(addr1).refund())
           .to.emit(contract, "PledgeRefunded")
-          .withArgs(addr1.address, ethers.utils.parseEther("5.0"));
+          .withArgs(addr1.address, ethers.utils.parseEther("6.0"));
       });
 
       describe("And already refunded", () => {

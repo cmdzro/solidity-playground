@@ -64,8 +64,7 @@ contract Crowdfunding is Ownable, Initializable {
     require(block.timestamp < deadline, // solhint-disable-line not-rely-on-time
             "Funding period ended");
 
-    // @FIXME test multiple calls to this function
-    pledgeOf[msg.sender] = amount;
+    pledgeOf[msg.sender] += amount;
     emit PledgeCreated(msg.sender, amount);
   }
 
